@@ -48,9 +48,21 @@ Open `desktop-planner.html` in any browser. It works the same way, but tasks you
 | Move an overdue task to today | Hover over it and click ↻ |
 | Change your name | Hover over the greeting and click ✎ |
 
+## Saving and backups
+
+Everything saves automatically as you type or tick a task. The **Backup** tab (next to Notes) tells you whether saving is working and when it last saved.
+
+Your data is stored by the app that shows the planner, so it doesn't follow the file around. You'll start with an empty planner if you:
+- add the file to Lively again, or replace it with a newer version
+- reset or reinstall Lively, or clear its data
+- open the same file in a regular browser instead
+
+So before you update or re-add the planner, open **Backup** and click **Download backup** (or **Copy backup** and paste it into Notepad). In the new copy, use **Restore from file** or **Restore pasted backup** to bring everything back: tasks, done log and notes.
+
+If the Backup tab shows a red warning, the app isn't keeping your data. Download a backup before you close it.
+
 ## Good to know
 
-- Your tasks are saved by the browser or wallpaper app that shows the file. Clearing that app's data clears your tasks.
 - If typing doesn't register on the wallpaper, check that keyboard input is turned on in Lively's settings.
 
 ## License

@@ -133,6 +133,16 @@ textarea::placeholder{color:var(--faint)}
   color:var(--text);font:inherit;font-size:14.5px;outline:none}
 .add input:focus{border-color:var(--accent)}
 .add button{background:var(--accent);color:var(--ink);border:none;border-radius:12px;padding:0 18px;font-weight:600;cursor:pointer}
+.bk p{font-size:13px;color:var(--muted);line-height:1.6;margin:6px 0 12px}
+.bk-status{font-size:13px;padding:10px 12px;border-radius:10px;background:var(--mint-soft);color:var(--mint);margin:6px 0 12px}
+.bk-status.bad{background:rgba(255,138,128,.14);color:var(--danger)}
+.bk-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.bk-btn{background:var(--card-hi);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:8px 12px;font:inherit;font-size:13px;cursor:pointer}
+.bk-btn:hover{border-color:var(--accent);background:var(--accent-soft)}
+.bk-btn.warn{border-color:var(--danger);color:var(--danger)}
+.bk textarea{flex:none;height:70px;margin:0 0 8px;padding:8px 10px;background:var(--card-hi);border:1px solid var(--line);border-radius:10px;font-size:12px;line-height:1.4}
+.bk-msg{font-size:12.5px;color:var(--accent);min-height:18px}
+.save-warn{display:none;font-size:12.5px;color:var(--danger);background:rgba(255,138,128,.12);border-radius:10px;padding:8px 12px;margin-bottom:10px;cursor:pointer}
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:6px}
 
 @media (max-width:1100px){
@@ -190,8 +200,22 @@ textarea::placeholder{color:var(--faint)}
       <div class="tabs">
         <button class="tab" data-t="up">Coming up</button>
         <button class="tab" data-t="notes">Notes</button>
+        <button class="tab" data-t="backup">Backup</button>
       </div>
       <div class="pane" id="pane-up"><div id="upList"></div></div>
+      <div class="pane bk" id="pane-backup">
+        <div class="bk-status" id="bkStatus">Checking…</div>
+        <p>Everything saves automatically as you type or tick. A backup file is your safety net if the wallpaper app gets reset or you update the planner.</p>
+        <div class="bk-row">
+          <button class="bk-btn" id="bkDownload">Download backup</button>
+          <button class="bk-btn" id="bkCopy">Copy backup</button>
+          <button class="bk-btn" id="bkFileBtn">Restore from file</button>
+          <input type="file" id="bkFile" accept=".json,application/json" style="display:none">
+        </div>
+        <textarea id="bkPaste" placeholder="Or paste backup text here, then click Restore pasted backup"></textarea>
+        <div class="bk-row"><button class="bk-btn" id="bkPasteBtn">Restore pasted backup</button></div>
+        <div class="bk-msg" id="bkMsg"></div>
+      </div>
       <div class="pane" id="pane-notes"><textarea id="notes" placeholder="Ideas, reminders, things to remember…"></textarea></div>
     </div>
   </div>
@@ -203,6 +227,7 @@ textarea::placeholder{color:var(--faint)}
       <div class="t-title" id="tTitle">Today</div>
       <div class="progress"><i id="bar" style="width:0"></i></div>
       <div class="p-text" id="pText"></div>
+      <div class="save-warn" id="saveWarn">⚠ Your changes aren't being saved here. Click to open Backup.</div>
       <div class="list" id="list"></div>
       <form class="add" id="addForm">
         <input id="newTask" placeholder="Add a task and press Enter" autocomplete="off">
@@ -216,7 +241,13 @@ textarea::placeholder{color:var(--faint)}
 const KEY='desk-planner-v1';
 let state={tasks:[],notes:'',range:7,tab:'up',name:''};
 try{const s=localStorage.getItem(KEY);if(s)state=Object.assign(state,JSON.parse(s));}catch(e){}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+let storageOK=false,lastSaved=null;
+function save(){
+  try{localStorage.setItem(KEY,JSON.stringify(state));storageOK=localStorage.getItem(KEY)!==null;lastSaved=new Date();}
+  catch(e){storageOK=false;}
+  if(typeof renderSaveStatus==='function')renderSaveStatus();
+}
+try{localStorage.setItem(KEY+'-test','1');storageOK=localStorage.getItem(KEY+'-test')==='1';localStorage.removeItem(KEY+'-test');}catch(e){storageOK=false;}
 
 const pad=n=>String(n).padStart(2,'0');
 const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
@@ -389,6 +420,7 @@ function renderSide(){
   document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.t===state.tab));
   $('pane-up').classList.toggle('on',state.tab==='up');
   $('pane-notes').classList.toggle('on',state.tab==='notes');
+  $('pane-backup').classList.toggle('on',state.tab==='backup');
 }
 
 function renderAll(){renderCal();renderTasks();renderReview();renderSide();}
@@ -415,7 +447,59 @@ $('nameInput').onkeydown=e=>{if(e.key==='Enter')e.target.blur();};
 $('nameInput').onblur=e=>{const v=e.target.value.trim();state.name=v;save();showNameInput(!v);tick();};
 showNameInput(!state.name);
 
-tick();setInterval(tick,1000);renderAll();
+/* Backup */
+function renderSaveStatus(){
+  const b=$('bkStatus');
+  if(storageOK){
+    b.className='bk-status';
+    b.textContent='✓ Saving automatically'+(lastSaved?' · last saved '+lastSaved.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}):'')+' · '+state.tasks.length+' tasks stored';
+  }else{
+    b.className='bk-status bad';
+    b.textContent='⚠ This app is not keeping your data. Download a backup before closing, and see the setup note in the README.';
+  }
+  $('saveWarn').style.display=storageOK?'none':'block';
+}
+$('saveWarn').onclick=()=>{state.tab='backup';renderSide();};
+const backupText=()=>JSON.stringify({app:'desktop-planner',version:2,exported:new Date().toISOString(),data:state},null,1);
+function msg(t){$('bkMsg').textContent=t;clearTimeout(msg.t);msg.t=setTimeout(()=>$('bkMsg').textContent='',6000);}
+$('bkDownload').onclick=()=>{
+  try{
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([backupText()],{type:'application/json'}));
+    a.download='planner-backup-'+todayISO()+'.json';
+    document.body.appendChild(a);a.click();a.remove();
+    msg('Backup downloaded. If nothing appeared, use Copy backup instead.');
+  }catch(e){msg('Download is blocked here. Use Copy backup instead.');}
+};
+$('bkCopy').onclick=async()=>{
+  const t=backupText();
+  try{await navigator.clipboard.writeText(t);msg('Copied. Paste it into Notepad and save it somewhere safe.');}
+  catch(e){const p=$('bkPaste');p.value=t;p.select();
+    try{document.execCommand('copy');msg('Copied. Paste it into Notepad and save it somewhere safe.');}
+    catch(_){msg('Select the text in the box and press Ctrl + C.');}}
+};
+let pendingRestore=null;
+function restore(text,btn){
+  let obj;
+  try{obj=JSON.parse(text);}catch(e){msg('That doesn\'t look like a planner backup.');return;}
+  const d=obj&&obj.data?obj.data:obj;
+  if(!d||!Array.isArray(d.tasks)){msg('That doesn\'t look like a planner backup.');return;}
+  if(pendingRestore!==btn){pendingRestore=btn;msg('This replaces everything currently in the planner. Click again to confirm.');
+    setTimeout(()=>{if(pendingRestore===btn)pendingRestore=null;},6000);return;}
+  pendingRestore=null;
+  state=Object.assign({tasks:[],notes:'',range:7,tab:'backup',name:state.name||''},d);
+  state.tasks.forEach(t=>{if(t.done&&!t.doneOn)t.doneOn=t.date;});
+  $('notes').value=state.notes||'';
+  save();renderAll();if(typeof showNameInput==='function')showNameInput(!state.name);tick();
+  msg('Restored '+state.tasks.length+' tasks.');
+}
+let fileText=null;
+$('bkFileBtn').onclick=()=>{if(fileText){restore(fileText,'file');}else $('bkFile').click();};
+$('bkFile').onchange=e=>{const f=e.target.files[0];if(!f)return;
+  f.text().then(t=>{fileText=t;restore(t,'file');setTimeout(()=>{fileText=null;},6000);});e.target.value='';};
+$('bkPasteBtn').onclick=()=>restore($('bkPaste').value.trim(),'paste');
+
+tick();setInterval(tick,1000);renderAll();renderSaveStatus();
 </script>
 </body>
 </html>
