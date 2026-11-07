@@ -2,6 +2,8 @@
 
 A to-do list, calendar and done log that lives on your desktop wallpaper, so your plan is in front of you every time you minimize a window.
 
+**Try it now:** [sushantdai.github.io/desktop-planner](https://sushantdai.github.io/desktop-planner/) opens the planner in your browser, no download needed.
+
 ![Desktop Planner preview](screenshot.png)
 
 ## What's in it
@@ -12,30 +14,48 @@ A to-do list, calendar and done log that lives on your desktop wallpaper, so you
 - **Done log.** See what you finished and on which date, over the last 3 days, week or month, with a small daily chart and your completion rate.
 - **Coming up.** Your next 7 days at a glance.
 - **Notes** for anything that isn't a task.
+- **Backup.** Save a copy of everything to a file and restore it any time.
 
-It's a single HTML file with no account, no subscription and no tracking. Everything you type is saved locally on your own computer.
+No account, no subscription and no tracking. Everything you type is saved on your own computer.
 
 ## Setup
 
-First, download `desktop-planner.html` (click the file above, then the download button) and save it in a permanent folder, such as `Documents\Planner`. Don't move or rename it after setup.
+### Option 1: Use it in your browser
 
-### Windows: Lively Wallpaper (free)
+1. Open **[sushantdai.github.io/desktop-planner](https://sushantdai.github.io/desktop-planner/)**.
+2. Type your name and press Enter.
+3. Add your first task.
 
+Bookmark the page or pin the tab. Your tasks stay saved when you come back on the same computer and browser.
+
+### Option 2: Make it your desktop wallpaper
+
+No download needed. You give the wallpaper app the link.
+
+**Windows: Lively Wallpaper (free)**
 1. Install **Lively Wallpaper** from the Microsoft Store.
-2. Open Lively, click **+ Add Wallpaper**, and select `desktop-planner.html`.
-3. Click it in your library to set it as your wallpaper.
-4. In Lively **Settings → Wallpaper**, set wallpaper input to mouse (or keyboard and mouse) so you can click and type on it.
-5. Press **Win + D** to see your desktop, type your name, and add your first task.
+2. Open Lively and click **+ Add Wallpaper**.
+3. Paste `https://sushantdai.github.io/desktop-planner/` into the URL box at the top and press Enter.
+4. Click it in your library to set it as your wallpaper.
+5. In Lively **Settings → Wallpaper**, set wallpaper input to mouse (or keyboard and mouse) so you can click and type on it.
+6. Press **Win + D** to see your desktop, type your name, and add your first task.
 
-### Mac: Plash (free)
-
+**Mac: Plash (free)**
 1. Install **Plash** from the Mac App Store.
-2. From the Plash menu bar icon, choose **Add Website** and select `desktop-planner.html`.
+2. From the Plash menu bar icon, choose **Add Website** and paste `https://sushantdai.github.io/desktop-planner/`.
 3. Turn on **Browsing Mode** when you want to click or type, and turn it off afterward.
 
-### Just want to try it?
+When the planner gets an update, you'll get it automatically, and your tasks stay saved.
 
-Open `desktop-planner.html` in any browser. It works the same way, but tasks you add in the browser are stored separately from the wallpaper version.
+### Option 3: Download the file (works offline)
+
+Use this if you want the planner to work without internet, or if adding the link doesn't work in your wallpaper app.
+
+1. Click **desktop-planner.html** in the file list above, then the download button.
+2. Save it in a permanent folder, such as `Documents\Planner`. Don't move or rename it after setup.
+3. In Lively, click **+ Add Wallpaper** and select the file (or in Plash, choose **Add Website** and select it).
+
+With this option, updates don't arrive automatically. To update, download the new file and follow the backup steps below so you don't lose your tasks.
 
 ## How to use it
 
@@ -52,12 +72,12 @@ Open `desktop-planner.html` in any browser. It works the same way, but tasks you
 
 Everything saves automatically as you type or tick a task. The **Backup** tab (next to Notes) tells you whether saving is working and when it last saved.
 
-Your data is stored by the app that shows the planner, so it doesn't follow the file around. You'll start with an empty planner if you:
-- add the file to Lively again, or replace it with a newer version
-- reset or reinstall Lively, or clear its data
-- open the same file in a regular browser instead
+Your tasks are stored by the browser or wallpaper app that shows the planner, on that one computer. So the browser and the wallpaper each keep their own separate list, and you'll start with an empty planner if you:
+- use a different computer or browser
+- clear your browser data, or reset or reinstall Lively
+- add the downloaded file to Lively again, or replace it with a newer version (Option 3)
 
-So before you update or re-add the planner, open **Backup** and click **Download backup** (or **Copy backup** and paste it into Notepad). In the new copy, use **Restore from file** or **Restore pasted backup** to bring everything back: tasks, done log and notes.
+To keep a safety copy, open **Backup** and click **Download backup** (or **Copy backup** and paste it into Notepad). To bring everything back (tasks, done log and notes), use **Restore from file** or **Restore pasted backup**. This is also how you move your planner to another computer.
 
 If the Backup tab shows a red warning, the app isn't keeping your data. Download a backup before you close it.
 
